@@ -1,11 +1,11 @@
 import React from 'react'
 import { View, StyleSheet, Text } from 'react-native';
 
-
 function TextBox({ text = '', fontSize = 20 }) {
   return (
     <View style={styles.textBox}>
-      <Text style={[styles.text, { fontSize }]}>{text}</Text> 
+      <Text style={{ padding: 10, fontFamily: 'Yaghut', fontSize: fontSize, textAlign: 'right' }}>{text}</Text>
+      {/* <Text style={[styles.text, { fontSize, fontFamily: 'Yaghut' }]}>{text}</Text> */}
     </View>
   )
 }

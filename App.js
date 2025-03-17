@@ -1,9 +1,17 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Questions from './app/screens/Questions';
+import { useFonts } from 'expo-font';
 
 export default function App() {
-  return <Questions />;
+  const [fontsLoaded] = useFonts({
+    'Yaghut': require('./app/assets/fonts/nadine.ttf'),
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
+  return <Questions />
     // <View style={styles.container}>
     //   <Text>Kadochi made by SeZ team!</Text>
     //   <StatusBar style="auto" />
