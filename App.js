@@ -1,6 +1,9 @@
 import { StyleSheet } from 'react-native';
 import Questions from './app/screens/Questions';
+import Welcome from './app/screens/Welcome';
 import { useFonts } from 'expo-font';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -11,11 +14,16 @@ export default function App() {
     return null;
   }
 
-  return <Questions />
-    // <View style={styles.container}>
-    //   <Text>Kadochi made by SeZ team!</Text>
-    //   <StatusBar style="auto" />
-    // </View>
+  const Stack = createStackNavigator();
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Welcome" component={Welcome} / >
+        <Stack.Screen name="Questions" component={Questions} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
   
 }
 
