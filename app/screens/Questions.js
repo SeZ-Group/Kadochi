@@ -5,6 +5,7 @@ import ProgressBar from '../components/ProgressBar';
 import TextBox from '../components/TextBox';
 import AnswerBox from '../components/AnswerBox';
 
+
 const questionsData = [
     {
         question: "زن هست یا مرد؟",
@@ -56,17 +57,22 @@ const questionsData = [
     }
 ];
 
-function Questions() {
+function Questions({navigation}) {
+    
     const [questionIndex, setQuestionIndex] = useState(0);
     const [selectedOption, setSelectedOption] = useState(null);
     const [selectedOptions, setSelectedOptions] = useState([]);
 
     const currentQuestion = questionsData[questionIndex];
+    if (!currentQuestion || currentQuestion.length === 0) {
+        navigation.navigate('Result');
+        return;
+    }
     const isMultiSelect = currentQuestion.question === "به چی علاقه داره؟";
 
     const handleNext = () => {
         console.log("انتخاب‌های نهایی:", isMultiSelect ? selectedOptions : selectedOption);
-
+        
         setQuestionIndex(prev => prev + 1);
         setSelectedOption(null);
         setSelectedOptions([]); // Reset selections for next question

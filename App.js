@@ -4,6 +4,7 @@ import Welcome from './app/screens/Welcome';
 import { useFonts } from 'expo-font';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import Result from './app/screens/Result';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -21,6 +22,7 @@ export default function App() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Welcome" component={Welcome} / >
         <Stack.Screen name="Questions" component={Questions} />
+        <Stack.Screen name="Result" component={Result} />
       </Stack.Navigator>
     </NavigationContainer>
   );
