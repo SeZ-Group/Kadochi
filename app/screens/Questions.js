@@ -4,78 +4,90 @@ import { Colors } from '../assets/Colors';
 import ProgressBar from '../components/ProgressBar';
 import TextBox from '../components/TextBox';
 import AnswerBox from '../components/AnswerBox';
+import axios from 'axios';
 
+const API_KEY ='...';
+const API_BASE_URL ='...';
 
 const questionsData = [
-    {
-        question: "زن هست یا مرد؟",
-        options: [
-            { key: "male", text: "👨 مرد" },
-            { key: "female", text: "👩 زن" }
-        ]
-    },
-    {
-        question: "این هدیه برای کیه؟",
-        options: [
-            { key: "friend", text: "👯 یه دوست صمیمی" },
-            { key: "family", text: "👨‍👩‍👧‍👦 یکی از اعضای خانواده" },
-            { key: "partner", text: "💖 یه پارتنر عاشقانه" },
-            { key: "colleague", text: "🤝 یه همکار یا آشنا" }
-        ]
-    },
-    {
-        question: "چند سالشه؟",
-        options: [
-            { key: "teen", text: "🧑‍🎓 یه نوجوون خفن (۱۰-۱۸)" },
-            { key: "young", text: "🎉 یه جوون پرانرژی (۱۸-۳۵)" },
-            { key: "adult", text: "📅 یه بزرگسال کاردرست (۳۵-۵۰)" },
-            { key: "senior", text: "🌟 یه آدم باتجربه و باحال (۵۱+)" }
-        ]
-    },
-    {
-        question: "به چی علاقه داره؟",
-        options: [
-            { key: "tech", text: "📱 تکنولوژی و گجت‌های خفن " },
-            { key: "fashion", text: "👗 مد و استایل " },
-            { key: "art", text: "🎨 یه هنرمنده!" },
-            { key: "books", text: "📖 یه کتاب‌خوره!" },
-            { key: "cooking", text: "🍳 آشپزی و غذا" },
-            { key: "sports", text: "💪 عاشق ورزشه" },
-            { key: "travel", text: "✈️ عشق سفر و ماجراجوییه" },
-            { key: "gaming", text: "🎮 گیمینگ" },
-            { key: "movies", text: "🎥 عشق فیلم و سریاله" }
-        ]
-    },
-    {
-        question: "چقدر می‌خوای هزینه کنی؟",
-        options: [
-            { key: "low", text: "💵 کمتر از ۱۰۰ تومن" },
-            { key: "medium", text: "💰 بین ۱۰۰ تا ۱ میلیون تومن" },
-            { key: "high", text: "💳 بین ۱ میلیون تا ۵ میلیون تومن" },
-            { key: "very_high", text: "💎 بالای ۵ میلیون تومن" }
-        ]
-    }
+    { question: "زن هست یا مرد؟", options: [
+        { key: "male", text: "👨 مرد" },
+        { key: "female", text: "👩 زن" }
+    ]},
+    { question: "این هدیه برای کیه؟", options: [
+        { key: "friend", text: "👯 یه دوست صمیمی" },
+        { key: "family", text: "👨‍👩‍👧‍👦 یکی از اعضای خانواده" },
+        { key: "partner", text: "💖 یه پارتنر عاشقانه" },
+        { key: "colleague", text: "🤝 یه همکار یا آشنا" }
+    ]},
+    { question: "چند سالشه؟", options: [
+        { key: "teen", text: "🧑‍🎓 یه نوجوون خفن (۱۰-۱۸)" },
+        { key: "young", text: "🎉 یه جوون پرانرژی (۱۸-۳۵)" },
+        { key: "adult", text: "📅 یه بزرگسال کاردرست (۳۵-۵۰)" },
+        { key: "senior", text: "🌟 یه آدم باتجربه و باحال (۵۱+)" }
+    ]},
+    { question: "به چی علاقه داره؟", options: [
+        { key: "tech", text: "📱 تکنولوژی و گجت‌های خفن " },
+        { key: "fashion", text: "👗 مد و استایل " },
+        { key: "art", text: "🎨 یه هنرمنده!" },
+        { key: "books", text: "📖 یه کتاب‌خوره!" },
+        { key: "cooking", text: "🍳 آشپزی و غذا" },
+        { key: "sports", text: "💪 عاشق ورزشه" },
+        { key: "travel", text: "✈️ عشق سفر و ماجراجوییه" },
+        { key: "gaming", text: "🎮 گیمینگ" },
+        { key: "movies", text: "🎥 عشق فیلم و سریاله" }
+    ]},
+    { question: "چقدر می‌خوای هزینه کنی؟", options: [
+        { key: "low", text: "💵 کمتر از ۱۰۰ تومن" },
+        { key: "medium", text: "💰 بین ۱۰۰ تا ۱ میلیون تومن" },
+        { key: "high", text: "💳 بین ۱ میلیون تا ۵ میلیون تومن" },
+        { key: "very_high", text: "💎 بالای ۵ میلیون تومن" }
+    ]}
 ];
 
-function Questions({navigation}) {
-    
+function Questions({ navigation }) {
     const [questionIndex, setQuestionIndex] = useState(0);
     const [selectedOption, setSelectedOption] = useState(null);
     const [selectedOptions, setSelectedOptions] = useState([]);
 
     const currentQuestion = questionsData[questionIndex];
-    if (!currentQuestion || currentQuestion.length === 0) {
-        navigation.navigate('Result');
-        return;
-    }
     const isMultiSelect = currentQuestion.question === "به چی علاقه داره؟";
 
-    const handleNext = () => {
-        console.log("انتخاب‌های نهایی:", isMultiSelect ? selectedOptions : selectedOption);
-        
+    const handleNext = async () => {
+        if (selectedOption || selectedOptions.length) {
+            setSelectedOptions(prev => [...prev, selectedOption || selectedOptions]);
+        }
+
+        if (questionIndex === questionsData.length - 1) {
+            const selectedTexts = selectedOptions.map(optionKey => 
+                questionsData.flatMap(q => q.options).find(opt => opt.key === optionKey)?.text || optionKey
+            );
+
+            console.log("انتخاب‌های نهایی:", selectedTexts);
+            let prompt = `من یک هدیه‌ای می‌خوام برای یک ${selectedTexts[0]} که ${selectedTexts[1]} حساب می‌شه، تقریبا سنش ${selectedTexts[2]} هست. به ${selectedTexts[3]} علاقه داره و می‌خوام که اندازه ${selectedTexts[4]} هزینه کنم.`;
+            prompt += ' برام مهمه که تو ایران بتونم پیشنهادات رو پیدا کنم، مثلا از دی‌جی‌کالا یا ترب یا با سلام. لطفا پیشنهادت رو در قالب یه لیست ۵ تایی به همراه عکس و اگه لینک داره بده.';
+            try {
+                console.log("پرامپت", prompt);
+                // Uncomment to enable API call
+                const response = await axios.post(`${API_BASE_URL}/chat/completions`, {
+                    model: "gpt-4o",
+                    messages: [{ role: "user", content: prompt }],
+                    temperature: 0.7,
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${API_KEY}`,
+                        "Content-Type": "application/json",
+                    },
+                });
+                console.log("پیشنهاد هدیه:", response.data.choices[0].message.content);
+            } catch (error) {
+                console.error("خطا در دریافت پاسخ از چت جی‌پی‌تی:", error);
+            }
+            navigation.navigate('Result');
+            return;
+        }
         setQuestionIndex(prev => prev + 1);
         setSelectedOption(null);
-        setSelectedOptions([]); // Reset selections for next question
     };
 
     return (
@@ -83,13 +95,9 @@ function Questions({navigation}) {
             <View style={styles.progressBar}>
                 <ProgressBar questionNumber={questionIndex + 1} />
             </View>
-
-            {/* نمایش سوال */}
             <View style={styles.questionBoxContainer}>
-                <TextBox text={currentQuestion.question} fontSize={18}/>
+                <TextBox text={currentQuestion.question} fontSize={18} />
             </View>
-
-            {/* نمایش گزینه‌ها داخل ScrollView */}
             <ScrollView style={styles.scrollableOptions} contentContainerStyle={styles.optionsContainer}>
                 {currentQuestion.options.map(option => (
                     <View key={option.key} style={styles.answerBoxContainer}>
@@ -103,8 +111,6 @@ function Questions({navigation}) {
                     </View>
                 ))}
             </ScrollView>
-
-            {/* دکمه بعدی */}
             <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
                 <Text style={styles.nextButtonText}>بعدی</Text>
             </TouchableOpacity>
