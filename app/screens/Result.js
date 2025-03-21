@@ -8,18 +8,28 @@ const ProductScreen = ({ route }) => {
   const { giftSuggestion } = route.params;
   let parsedSuggestions = [];
 
-try {
-  parsedSuggestions = typeof giftSuggestion === 'string'
-    ? JSON.parse(giftSuggestion)
-    : giftSuggestion;
-} catch (error) {
-  console.error("Failed to parse giftSuggestion:", error);
-}
-  let products = parsedSuggestions.map(item => ({
-    title: item["product-title"],
-    image: item["product-image"],
-    description: item["product-description"]
-}));
+  let products = [];
+
+  try {
+    parsedSuggestions = typeof giftSuggestion === 'string'
+      ? JSON.parse(giftSuggestion)
+      : giftSuggestion;
+  
+    if (Array.isArray(parsedSuggestions)) {
+      products = parsedSuggestions.map(item => ({
+        title: item["product-title"],
+        image: item["product-image"],
+        description: item["product-description"]
+      }));
+    } else {
+      console.error("parsedSuggestions is not an array:", parsedSuggestions);
+      alert("مشکلی پیش اومده و فعلا نمیتونیم جوابگو باشیم. اگه میشه چند دقیقه دیگه دوباره تلاش کن.");
+    }
+  } catch (error) {
+    console.error("Failed to parse giftSuggestion:", error);
+    alert("مشکلی پیش اومده و فعلا نمیتونیم جوابگو باشیم. اگه میشه چند دقیقه دیگه دوباره تلاش کن.");
+  }
+  
 
   return (
 
