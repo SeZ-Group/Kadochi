@@ -5,9 +5,9 @@ import ProgressBar from '../components/ProgressBar';
 import TextBox from '../components/TextBox';
 import AnswerBox from '../components/AnswerBox';
 import axios from 'axios';
-
-const API_KEY ='...';
-const API_BASE_URL ='...';
+API_BASE_URL
+const API_BASE_URL ='';
+const API_KEY ='';
 
 const questionsData = [
     { question: "زن هست یا مرد؟", options: [
@@ -52,7 +52,6 @@ function Questions({ navigation }) {
 
     const currentQuestion = questionsData[questionIndex];
     const isMultiSelect = currentQuestion.question === "به چی علاقه داره؟";
-
     const handleNext = async () => {
         if (selectedOption || selectedOptions.length) {
             setSelectedOptions(prev => [...prev, selectedOption || selectedOptions]);
@@ -64,8 +63,18 @@ function Questions({ navigation }) {
             );
 
             console.log("انتخاب‌های نهایی:", selectedTexts);
-            let prompt = `من یک هدیه‌ای می‌خوام برای یک ${selectedTexts[0]} که ${selectedTexts[1]} حساب می‌شه، تقریبا سنش ${selectedTexts[2]} هست. به ${selectedTexts[3]} علاقه داره و می‌خوام که اندازه ${selectedTexts[4]} هزینه کنم.`;
+            let prompt = `من یک هدیه‌ای می‌خوام برای یک ${selectedTexts[0]} که ${selectedTexts[1]} حساب می‌شه، تقریبا سنش ${selectedTexts[2]} هست. به ${selectedTexts[3]} علاقه داره و می‌خوام که اندازه ${selectedTexts[4]} هزینه کنم. لطفا واسخ رو به این فرمت بده می خوام رد کد استفاده کنم:
+
+            [
+            {product-title: ..., product-image: ... product-description: ...},
+            {product-title: ..., product-image: ... product-description: ...},
+            ]
+            و هیچ چیز اضافه‌ای نده. فقط همین json
+            همچنین لینک عکس ،واقعی و valid بده.`;
             prompt += ' برام مهمه که تو ایران بتونم پیشنهادات رو پیدا کنم، مثلا از دی‌جی‌کالا یا ترب یا با سلام. لطفا پیشنهادت رو در قالب یه لیست ۵ تایی به همراه عکس و اگه لینک داره بده.';
+            let giftSuggestion; // Declare it in a wider scope
+            let jsonString; // Declare it in a wider scope
+
             try {
                 console.log("پرامپت", prompt);
                 // Uncomment to enable API call
@@ -79,11 +88,27 @@ function Questions({ navigation }) {
                         "Content-Type": "application/json",
                     },
                 });
-                console.log("پیشنهاد هدیه:", response.data.choices[0].message.content);
+
+                giftSuggestion = response.data.choices[0].message.content;
             } catch (error) {
+                console.log(`${API_BASE_URL}/chat/completions`);
                 console.error("خطا در دریافت پاسخ از چت جی‌پی‌تی:", error);
             }
-            navigation.navigate('Result');
+            try{
+            jsonString = giftSuggestion
+            .replace("```json", "")    // Remove the 'پیشنهاد هدیه: ```json' part
+            .replace("```", "")                      // Remove the closing '```' part
+            .trim();                                // Remove any extra spaces
+            }
+            catch (error){
+                console.error(error);
+
+            }
+          // Log the extracted string for debugging
+          console.log("Extracted JSON String:", jsonString);
+            navigation.navigate('Result', {
+                giftSuggestion: jsonString
+            });
             return;
         }
         setQuestionIndex(prev => prev + 1);

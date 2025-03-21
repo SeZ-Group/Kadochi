@@ -1,30 +1,29 @@
 import React from "react";
 import { ScrollView, View, ImageBackground } from "react-native";
 import ProductCard from '../components/ProductCard';
+import { Colors } from '../assets/Colors';
 
 
-const products = [
-  {
-    image: require("../assets/1.jpg"),
-    title: "کلاس نقاشی یک روزه",
-    description: "ورکشاپ یک روزه نقاشی",
-  },
-  {
-    image: require("../assets/2.jpg"),
-    title: "لوازم نقاشی رنگ روغن",
-    description: "پوالت و قلم مو از ابزارهای اصلی و ضروری در نقاشی رنگ روغن به شمار می‌روند که کار با رنگ‌ها و ایجاد اثر هنری به وسیله آن‌ها صورت می‌گیرد.",
-  },
-  {
-    image: require("../assets/3.jpg"),
-    title: "بوم نقاشی چوبی قابل حمل",
-    description: "پایه بوم به عنوان یکی از ابزارهای اصلی در نقاشی شناخته می‌شود که بر اساس جنس و مصالح مختلف ساخته می‌شود.",
-  },
-];
+const ProductScreen = ({ route }) => {
+  const { giftSuggestion } = route.params;
+  let parsedSuggestions = [];
 
+try {
+  parsedSuggestions = typeof giftSuggestion === 'string'
+    ? JSON.parse(giftSuggestion)
+    : giftSuggestion;
+} catch (error) {
+  console.error("Failed to parse giftSuggestion:", error);
+}
+  let products = parsedSuggestions.map(item => ({
+    title: item["product-title"],
+    image: item["product-image"],
+    description: item["product-description"]
+}));
 
-const ProductScreen = () => {
   return (
 
+    <View style={styles.overlay}>
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {products.map((product, index) => (
@@ -36,7 +35,8 @@ const ProductScreen = () => {
           />
         ))}
       </ScrollView>
-    </View>
+      </View>
+      </View>
 
   );
 };
@@ -48,6 +48,13 @@ const styles = {
     alignItems: "center",
     paddingTop: 200, // Moves content down (adjust this value)
   },
+  overlay: {
+    flex: 1,
+    width: '100%',
+    backgroundColor: `${Colors.primary}95`,
+    justifyContent: 'center',
+    alignItems: 'center',
+},
   scrollContainer: {
     alignItems: "center", // Centers items inside ScrollView horizontally
     justifyContent: "flex-start", // Prevents sticking to the top

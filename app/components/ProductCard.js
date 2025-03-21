@@ -5,13 +5,11 @@ import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
 const { width } = Dimensions.get("window");
 
 const ProductCard = ({ image, title, description }) => {
-  console.log("Image Source:", image);  // Debugging
-
   return (
 
     <View style={styles.card}>
      <Image 
-        source={image}  // No need for additional checks
+        source={{ uri: image }}  // No need for additional checks
         style={styles.image}
         onError={(e) => console.log("Image failed to load", e.nativeEvent.error)}
       />
