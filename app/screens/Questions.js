@@ -9,9 +9,6 @@ import Constants from 'expo-constants';
 
 const { API_KEY, API_BASE_URL } = Constants.expoConfig?.extra ?? {};
 
-
-console.log(API_KEY, API_BASE_URL)
-
 const questionsData = [
     { question: "زن هست یا مرد؟", options: [
         { key: "male", text: "👨 مرد" },
@@ -49,7 +46,6 @@ const questionsData = [
 ];
 
 function Questions({ navigation }) {
-    console.log(API_KEY, API_BASE_URL)
     const [questionIndex, setQuestionIndex] = useState(0);
     const [selectedOption, setSelectedOption] = useState(null);
     const [selectedOptions, setSelectedOptions] = useState([]);
@@ -65,8 +61,6 @@ function Questions({ navigation }) {
             const selectedTexts = selectedOptions.map(optionKey => 
                 questionsData.flatMap(q => q.options).find(opt => opt.key === optionKey)?.text || optionKey
             );
-            console.log(API_KEY, API_BASE_URL)
-
             console.log("انتخاب‌های نهایی:", selectedTexts);
             let prompt = `من یک هدیه‌ای می‌خوام برای یک ${selectedTexts[0]} که ${selectedTexts[1]} حساب می‌شه، تقریبا سنش ${selectedTexts[2]} هست. به ${selectedTexts[3]} علاقه داره و می‌خوام که اندازه ${selectedTexts[4]} هزینه کنم. لطفا واسخ رو به این فرمت بده می خوام رد کد استفاده کنم:
 
