@@ -13,7 +13,7 @@ function Welcome({navigation}) { // ✅ Receive navigation prop
                 
                 {/* Logo and Title */}
                 <View style={styles.header}>
-                    <Image source={require('../assets/logo.webp')} style={styles.logo} />
+                    <Image source={require('../assets/best-logo.png')} style={styles.logo} />
                     <Text style={styles.title}>کادوچی</Text>
                 </View>
 
@@ -62,16 +62,17 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     logo: {
-        width: 100,
-        height: 100,
+        width: 120,
+        height: 120,
         resizeMode: 'contain',
     },
     title: {
-        fontSize: 28,
+        fontSize: 22,
         fontWeight: 'bold',
-        color: 'white',
-        marginTop: 10,
+        color: '#F8C660',
+        marginTop: 5,
         textAlign: 'center',
+        fontFamily: 'Yaghut',
     },
     scrollView: {
         flex: 1,
