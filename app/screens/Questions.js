@@ -9,7 +9,6 @@ import Constants from 'expo-constants';
 
 const { API_KEY, API_BASE_URL } = Constants.expoConfig?.extra ?? {};
 
-// Mappings
 const valueMap = {
   male: "مرد",
   female: "زن",
@@ -44,7 +43,6 @@ const questionsData = [
   { question: "چقدر می‌خوای هزینه کنی؟", options: [ { key: "low", text: "💵 کمتر از ۱۰۰ تومن" }, { key: "medium", text: "💰 بین ۱۰۰ تا ۱ میلیون تومن" }, { key: "high", text: "💳 بین ۱ میلیون تا ۵ میلیون تومن" }, { key: "very_high", text: "💎 بالای ۵ میلیون تومن" } ] },
 ];
 
-// Helper function to build prompt from selected answers
 const generatePrompt = (answers) => {
   const selectedTexts = answers.map(
     (answerArray) => answerArray.map(key => valueMap[key]).filter(Boolean).join(' و ')
@@ -75,7 +73,13 @@ const Questions = ({ navigation }) => {
   const isMultiSelect = currentQuestion.question === "به چی علاقه داره؟";
   const isLastQuestion = questionIndex === questionsData.length - 1;
 
+  const isDisabled = isMultiSelect
+    ? selectedOptions.length === 0
+    : selectedOption === null;
+
   const handleNext = useCallback(async () => {
+    if (isDisabled) return;
+
     const currentAnswer = isMultiSelect ? selectedOptions : [selectedOption];
 
     if (isLastQuestion) {
@@ -101,18 +105,16 @@ const Questions = ({ navigation }) => {
         navigation.navigate('Result', { giftSuggestion: jsonString });
       } catch (error) {
         console.error("❌ خطا در دریافت پاسخ:", error);
-        // Maybe add some user feedback here later
       }
 
       return;
     }
 
-    // Go to next question
     setAnswers(prev => [...prev, currentAnswer]);
     setQuestionIndex(prev => prev + 1);
     setSelectedOption(null);
     setSelectedOptions([]);
-  }, [selectedOption, selectedOptions, questionIndex, answers]);
+  }, [selectedOption, selectedOptions, questionIndex, answers, isDisabled]);
 
   return (
     <View style={styles.container}>
@@ -138,8 +140,14 @@ const Questions = ({ navigation }) => {
         ))}
       </ScrollView>
 
-      <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-        <Text style={styles.nextButtonText}>بعدی</Text>
+      <TouchableOpacity
+        style={[styles.nextButton, isDisabled && styles.disabledButton]}
+        onPress={handleNext}
+        disabled={isDisabled}
+      >
+        <Text style={styles.nextButtonText}>
+          {isLastQuestion ? 'دیدن نتیجه' : 'بعدی'}
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -195,6 +203,10 @@ const styles = StyleSheet.create({
   nextButtonText: {
     color: "#fff",
     fontSize: 18,
+  },
+  disabledButton: {
+    backgroundColor: '#cccccc',
+    opacity: 0.6,
   },
 });
 
