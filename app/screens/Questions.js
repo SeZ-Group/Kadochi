@@ -7,61 +7,63 @@ import AnswerBox from '../components/AnswerBox';
 import axios from 'axios';
 import Constants from 'expo-constants';
 
-const { API_KEY, API_BASE_URL } = Constants.expoConfig?.extra ?? {};
-
-const valueMap = {
-  male: "مرد",
-  female: "زن",
-  friend: "دوست صمیمی",
-  family: "عضو خانواده",
-  partner: "پارتنر عاشقانه",
-  colleague: "همکار یا آشنا",
-  teen: "نوجوان بین ۱۰ تا ۱۸ سال",
-  young: "جوان بین ۱۸ تا ۳۵ سال",
-  adult: "بزرگسال بین ۳۵ تا ۵۰ سال",
-  senior: "سالمند بالای ۵۰ سال",
-  tech: "تکنولوژی",
-  fashion: "مد و فشن",
-  art: "هنر",
-  books: "کتاب",
-  cooking: "آشپزی",
-  sports: "ورزش",
-  travel: "سفر",
-  gaming: "بازی و گیمینگ",
-  movies: "فیلم و سریال",
-  low: "کمتر از ۱۰۰ هزار تومان",
-  medium: "بین ۱۰۰ هزار تا ۱ میلیون تومان",
-  high: "بین ۱ تا ۵ میلیون تومان",
-  very_high: "بیشتر از ۵ میلیون تومان",
-};
+const { API_BASE_URL } = Constants.expoConfig?.extra ?? {};
 
 const questionsData = [
-  { question: "زن هست یا مرد؟", options: [ { key: "male", text: "👨 مرد" }, { key: "female", text: "👩 زن" } ] },
-  { question: "این هدیه برای کیه؟", options: [ { key: "friend", text: "👯 یه دوست صمیمی" }, { key: "family", text: "👨‍👩‍👧‍👦 یکی از اعضای خانواده" }, { key: "partner", text: "💖 یه پارتنر عاشقانه" }, { key: "colleague", text: "🤝 یه همکار یا آشنا" } ] },
-  { question: "چند سالشه؟", options: [ { key: "teen", text: "🧑‍🎓 یه نوجوون خفن (۱۰-۱۸)" }, { key: "young", text: "🎉 یه جوون پرانرژی (۱۸-۳۵)" }, { key: "adult", text: "📅 یه بزرگسال کاردرست (۳۵-۵۰)" }, { key: "senior", text: "🌟 یه آدم باتجربه و باحال (۵۱+)" } ] },
-  { question: "به چی علاقه داره؟", options: [ { key: "tech", text: "📱 تکنولوژی و گجت‌های خفن " }, { key: "fashion", text: "👗 مد و استایل " }, { key: "art", text: "🎨 یه هنرمنده!" }, { key: "books", text: "📖 یه کتاب‌خوره!" }, { key: "cooking", text: "🍳 آشپزی و غذا" }, { key: "sports", text: "💪 عاشق ورزشه" }, { key: "travel", text: "✈️ عشق سفر و ماجراجوییه" }, { key: "gaming", text: "🎮 گیمینگ" }, { key: "movies", text: "🎥 عشق فیلم و سریاله" } ] },
-  { question: "چقدر می‌خوای هزینه کنی؟", options: [ { key: "low", text: "💵 کمتر از ۱۰۰ تومن" }, { key: "medium", text: "💰 بین ۱۰۰ تا ۱ میلیون تومن" }, { key: "high", text: "💳 بین ۱ میلیون تا ۵ میلیون تومن" }, { key: "very_high", text: "💎 بالای ۵ میلیون تومن" } ] },
+  {
+    key: "gender",
+    question: "زن هست یا مرد؟",
+    options: [
+      { key: "male", text: "👨 مرد" },
+      { key: "female", text: "👩 زن" }
+    ],
+  },
+  {
+    key: "relation",
+    question: "این هدیه برای کیه؟",
+    options: [
+      { key: "friend", text: "👯 یه دوست صمیمی" },
+      { key: "family", text: "👨‍👩‍👧‍👦 یکی از اعضای خانواده" },
+      { key: "partner", text: "💖 یه پارتنر عاشقانه" },
+      { key: "colleague", text: "🤝 یه همکار یا آشنا" }
+    ],
+  },
+  {
+    key: "age_group",
+    question: "چند سالشه؟",
+    options: [
+      { key: "teen", text: "🧑‍🎓 یه نوجوون خفن (۱۰-۱۸)" },
+      { key: "young", text: "🎉 یه جوون پرانرژی (۱۸-۳۵)" },
+      { key: "adult", text: "📅 یه بزرگسال کاردرست (۳۵-۵۰)" },
+      { key: "senior", text: "🌟 یه آدم باتجربه و باحال (۵۱+)" }
+    ],
+  },
+  {
+    key: "interest",
+    question: "به چی علاقه داره؟",
+    options: [
+      { key: "tech", text: "📱 تکنولوژی و گجت‌های خفن " },
+      { key: "fashion", text: "👗 مد و استایل " },
+      { key: "art", text: "🎨 یه هنرمنده!" },
+      { key: "books", text: "📖 یه کتاب‌خوره!" },
+      { key: "cooking", text: "🍳 آشپزی و غذا" },
+      { key: "sports", text: "💪 عاشق ورزشه" },
+      { key: "travel", text: "✈️ عشق سفر و ماجراجوییه" },
+      { key: "gaming", text: "🎮 گیمینگ" },
+      { key: "movies", text: "🎥 عشق فیلم و سریاله" }
+    ],
+  },
+  {
+    key: "budget",
+    question: "چقدر می‌خوای هزینه کنی؟",
+    options: [
+      { key: "low", text: "💵 کمتر از ۱۰۰ تومن" },
+      { key: "medium", text: "💰 بین ۱۰۰ تا ۱ میلیون تومن" },
+      { key: "high", text: "💳 بین ۱ میلیون تا ۵ میلیون تومن" },
+      { key: "very_high", text: "💎 بالای ۵ میلیون تومن" }
+    ],
+  },
 ];
-
-const generatePrompt = (answers) => {
-  const selectedTexts = answers.map(
-    (answerArray) => answerArray.map(key => valueMap[key]).filter(Boolean).join(' و ')
-  );
-
-  return `
-من یک هدیه‌ای می‌خوام برای یک ${selectedTexts[0]} که ${selectedTexts[1]} حساب می‌شه، تقریبا سنش ${selectedTexts[2]} هست. به ${selectedTexts[3]} علاقه داره و می‌خوام که اندازه ${selectedTexts[4]} هزینه کنم.
-لطفا پاسخ رو به این فرمت بده چون می‌خوام توی کد استفاده کنم:
-
-[
-  {product-title: ..., product-image: ..., product-description: ...},
-  ...
-]
-
-و هیچ چیز اضافه‌ای نده. فقط همین JSON. لینک عکس باید واقعی و قابل استفاده باشه.
-
-برام مهمه که پیشنهادها از سایت‌هایی مثل دیجی‌کالا، ترب یا با سلام باشه و بشه تو ایران پیداشون کرد. لطفاً ۵ تا پیشنهاد خوب بده.
-`.trim();
-};
 
 const Questions = ({ navigation }) => {
   const [questionIndex, setQuestionIndex] = useState(0);
@@ -70,7 +72,7 @@ const Questions = ({ navigation }) => {
   const [answers, setAnswers] = useState([]);
 
   const currentQuestion = questionsData[questionIndex];
-  const isMultiSelect = currentQuestion.question === "به چی علاقه داره؟";
+  const isMultiSelect = currentQuestion.key === "interest";
   const isLastQuestion = questionIndex === questionsData.length - 1;
 
   const isDisabled = isMultiSelect
@@ -84,27 +86,29 @@ const Questions = ({ navigation }) => {
 
     if (isLastQuestion) {
       const allAnswers = [...answers, currentAnswer];
-      const prompt = generatePrompt(allAnswers);
+      const finalAnswers = {};
+
+      questionsData.forEach((q, i) => {
+        // برای علاقه‌مندی‌ها فقط یکی رو بفرست یا همه رو ترکیب کن
+        finalAnswers[q.key] = Array.isArray(allAnswers[i])
+          ? allAnswers[i][0]
+          : allAnswers[i][0];
+      });
+
+      console.log(finalAnswers)
 
       try {
-        const response = await axios.post(`${API_BASE_URL}/chat/completions`, {
-          model: "gpt-4o",
-          messages: [{ role: "user", content: prompt }],
-          temperature: 0.7,
-        }, {
+        const response = await axios.post(`http://Your-IP/api/suggestions/`, finalAnswers, {
           headers: {
-            Authorization: `Bearer ${API_KEY}`,
-            "Content-Type": "application/json",
-          },
+            "Content-Type": "application/json"
+          }
         });
 
-        let giftSuggestion = response.data.choices[0].message.content ?? '';
-        let jsonString = giftSuggestion.replace(/```json|```/g, '').trim();
-
-        console.log("Extracted JSON String:", jsonString);
-        navigation.navigate('Result', { giftSuggestion: jsonString });
+        const suggestions = response.data;
+        console.log(suggestions)
+        navigation.navigate('Result', { giftSuggestion: suggestions });
       } catch (error) {
-        console.error("❌ خطا در دریافت پاسخ:", error);
+        console.error("❌ خطا در گرفتن اطلاعات از بک‌اند:", error);
       }
 
       return;
