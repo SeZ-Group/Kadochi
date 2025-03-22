@@ -9,6 +9,33 @@ import Constants from 'expo-constants';
 
 const { API_KEY, API_BASE_URL } = Constants.expoConfig?.extra ?? {};
 
+const valueMap = {
+    male: "مرد",
+    female: "زن",
+    friend: "دوست صمیمی",
+    family: "عضو خانواده",
+    partner: "پارتنر عاشقانه",
+    colleague: "همکار یا آشنا",
+    teen: "نوجوان بین ۱۰ تا ۱۸ سال",
+    young: "جوان بین ۱۸ تا ۳۵ سال",
+    adult: "بزرگسال بین ۳۵ تا ۵۰ سال",
+    senior: "سالمند بالای ۵۰ سال",
+    tech: "تکنولوژی",
+    fashion: "مد و فشن",
+    art: "هنر",
+    books: "کتاب",
+    cooking: "آشپزی",
+    sports: "ورزش",
+    travel: "سفر",
+    gaming: "بازی و گیمینگ",
+    movies: "فیلم و سریال",
+    low: "کمتر از ۱۰۰ هزار تومان",
+    medium: "بین ۱۰۰ هزار تا ۱ میلیون تومان",
+    high: "بین ۱ تا ۵ میلیون تومان",
+    very_high: "بیشتر از ۵ میلیون تومان"
+};
+
+
 const questionsData = [
     { question: "زن هست یا مرد؟", options: [
         { key: "male", text: "👨 مرد" },
@@ -49,34 +76,38 @@ function Questions({ navigation }) {
     const [questionIndex, setQuestionIndex] = useState(0);
     const [selectedOption, setSelectedOption] = useState(null);
     const [selectedOptions, setSelectedOptions] = useState([]);
+    const [answers, setAnswers] = useState([]);
 
     const currentQuestion = questionsData[questionIndex];
     const isMultiSelect = currentQuestion.question === "به چی علاقه داره؟";
     const handleNext = async () => {
-        if (selectedOption || selectedOptions.length) {
-            setSelectedOptions(prev => [...prev, selectedOption || selectedOptions]);
-        }
-
+        const currentAnswer = isMultiSelect ? selectedOptions : [selectedOption];
+    
         if (questionIndex === questionsData.length - 1) {
-            const selectedTexts = selectedOptions.map(optionKey => 
-                questionsData.flatMap(q => q.options).find(opt => opt.key === optionKey)?.text || optionKey
-            );
-            console.log("انتخاب‌های نهایی:", selectedTexts);
+            const allAnswers = [...answers, currentAnswer]; // اضافه کردن جواب آخر به لیست جواب‌ها
+    
+            // تبدیل به متن
+            const selectedTexts = allAnswers.map((answerArray, index) => {
+                const mappedAnswers = answerArray.map(key => valueMap[key]).filter(Boolean);
+                return mappedAnswers.join(' و ');
+            });
+    
+            // ساخت پرامپت
             let prompt = `من یک هدیه‌ای می‌خوام برای یک ${selectedTexts[0]} که ${selectedTexts[1]} حساب می‌شه، تقریبا سنش ${selectedTexts[2]} هست. به ${selectedTexts[3]} علاقه داره و می‌خوام که اندازه ${selectedTexts[4]} هزینه کنم. لطفا واسخ رو به این فرمت بده می خوام رد کد استفاده کنم:
-
-            [
-            {product-title: ..., product-image: ... product-description: ...},
-            {product-title: ..., product-image: ... product-description: ...},
-            ]
-            و هیچ چیز اضافه‌ای نده. فقط همین json
-            همچنین لینک عکس ،واقعی و valid بده.`;
+    
+    [
+    {product-title: ..., product-image: ... product-description: ...},
+    {product-title: ..., product-image: ... product-description: ...},
+    ]
+    و هیچ چیز اضافه‌ای نده. فقط همین json
+    همچنین لینک عکس ،واقعی و valid بده.`;
             prompt += ' برام مهمه که تو ایران بتونم پیشنهادات رو پیدا کنم، مثلا از دی‌جی‌کالا یا ترب یا با سلام. لطفا پیشنهادت رو در قالب یه لیست ۵ تایی به همراه عکس و اگه لینک داره بده.';
-            let giftSuggestion; // Declare it in a wider scope
-            let jsonString; // Declare it in a wider scope
-
+    
+            let giftSuggestion;
+            let jsonString;
+    
             try {
                 console.log("پرامپت", prompt);
-                // Uncomment to enable API call
                 const response = await axios.post(`${API_BASE_URL}/chat/completions`, {
                     model: "gpt-4o",
                     messages: [{ role: "user", content: prompt }],
@@ -87,32 +118,34 @@ function Questions({ navigation }) {
                         "Content-Type": "application/json",
                     },
                 });
-
+    
                 giftSuggestion = response.data.choices[0].message.content;
             } catch (error) {
-                console.log(`${API_BASE_URL}/chat/completions`);
-                console.error("خطا در دریافت پاسخ از چت جی‌پی‌تی:", error);
+                console.error("خطا در دریافت پاسخ:", error);
             }
-            try{
-            jsonString = giftSuggestion
-            .replace("```json", "")    // Remove the 'پیشنهاد هدیه: ```json' part
-            .replace("```", "")                      // Remove the closing '```' part
-            .trim();                                // Remove any extra spaces
-            }
-            catch (error){
+    
+            try {
+                jsonString = giftSuggestion
+                    .replace("```json", "")
+                    .replace("```", "")
+                    .trim();
+            } catch (error) {
                 console.error(error);
-
             }
-          // Log the extracted string for debugging
-          console.log("Extracted JSON String:", jsonString);
+    
+            console.log("Extracted JSON String:", jsonString);
             navigation.navigate('Result', {
                 giftSuggestion: jsonString
             });
             return;
         }
+    
+        setAnswers(prev => [...prev, currentAnswer]);
         setQuestionIndex(prev => prev + 1);
         setSelectedOption(null);
+        setSelectedOptions([]);
     };
+    
 
     return (
         <View style={styles.container}>
