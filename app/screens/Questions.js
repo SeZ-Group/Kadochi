@@ -66,93 +66,135 @@ const questionsData = [
 ];
 
 const Questions = ({ navigation }) => {
-  const [questionIndex, setQuestionIndex] = useState(0);
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [selectedOptions, setSelectedOptions] = useState([]);
-  const [answers, setAnswers] = useState([]);
+    const [questionIndex, setQuestionIndex] = useState(0);
+    const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedOptions, setSelectedOptions] = useState([]);
+    const [answers, setAnswers] = useState([]);
+  
+    const currentQuestion = questionsData[questionIndex];
+    const isMultiSelect = currentQuestion.key === "interest";
+    const isLastQuestion = questionIndex === questionsData.length - 1;
+    const isFirstQuestion = questionIndex === 0;
+  
+    const isDisabled = isMultiSelect
+      ? selectedOptions.length === 0
+      : selectedOption === null;
 
-  const currentQuestion = questionsData[questionIndex];
-  const isMultiSelect = currentQuestion.key === "interest";
-  const isLastQuestion = questionIndex === questionsData.length - 1;
-
-  const isDisabled = isMultiSelect
-    ? selectedOptions.length === 0
-    : selectedOption === null;
-
-  const handleNext = useCallback(async () => {
-    if (isDisabled) return;
-
-    const currentAnswer = isMultiSelect ? selectedOptions : [selectedOption];
-
-    if (isLastQuestion) {
-      const allAnswers = [...answers, currentAnswer];
-      const finalAnswers = {};
-
-      questionsData.forEach((q, i) => {
-        finalAnswers[q.key] = Array.isArray(allAnswers[i])
+    const handleBackToHome = () => {
+        navigation.navigate('Welcome');
+    };
+      
+  
+    const handleNext = useCallback(async () => {
+      if (isDisabled) return;
+  
+      const currentAnswer = isMultiSelect ? selectedOptions : [selectedOption];
+  
+      if (isLastQuestion) {
+        const allAnswers = [...answers, currentAnswer];
+        const finalAnswers = {};
+  
+        questionsData.forEach((q, i) => {
+          finalAnswers[q.key] = Array.isArray(allAnswers[i])
             ? (q.key === "interest" ? allAnswers[i] : allAnswers[i][0])
             : allAnswers[i];
-
-      });
-
-      try {
-        const response = await axios.post(`http://192.168.238.59:8000/api/suggest/`, finalAnswers, {
-          headers: {
-            "Content-Type": "application/json"
-          }
         });
-
-        const suggestions = response.data;
-        navigation.navigate('Result', { giftSuggestion: suggestions });
-      } catch (error) {
-        console.error("❌ خطا در گرفتن اطلاعات از بک‌اند:", error);
+  
+        try {
+          const response = await axios.post(`http://192.168.238.59:8000/api/suggest/`, finalAnswers, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+  
+          const suggestions = response.data;
+          navigation.navigate("Result", { giftSuggestion: suggestions });
+        } catch (error) {
+          console.error("❌ خطا در گرفتن اطلاعات از بک‌اند:", error);
+        }
+  
+        return;
       }
+  
+      setAnswers(prev => [...prev, currentAnswer]);
+      setQuestionIndex(prev => prev + 1);
+      setSelectedOption(null);
+      setSelectedOptions([]);
+    }, [selectedOption, selectedOptions, questionIndex, answers, isDisabled]);
+  
+    const handlePrevious = () => {
+      if (isFirstQuestion) return;
+  
+      const previousIndex = questionIndex - 1;
+      const previousAnswer = answers[previousIndex];
+  
+      // برگشت به حالت قبلی پاسخ
+      if (questionsData[previousIndex].key === "interest") {
+        setSelectedOptions(previousAnswer);
+      } else {
+        setSelectedOption(previousAnswer[0]);
+      }
+  
+      setAnswers(prev => prev.slice(0, -1));
+      setQuestionIndex(previousIndex);
+    };
+  
+    return (
+      <View style={styles.container}>
+        <View style={styles.progressBar}>
+          <ProgressBar questionNumber={questionIndex + 1} />
+        </View>
+  
+        <View style={styles.questionBoxContainer}>
+          <TextBox text={currentQuestion.question} fontSize={18} />
+        </View>
+  
+        <ScrollView style={styles.scrollableOptions} contentContainerStyle={styles.optionsContainer}>
+          {currentQuestion.options.map(option => (
+            <View key={option.key} style={styles.answerBoxContainer}>
+              <AnswerBox
+                text={option.text}
+                selectedOption={isMultiSelect ? selectedOptions : selectedOption}
+                setSelectedOption={isMultiSelect ? setSelectedOptions : setSelectedOption}
+                optionKey={option.key}
+                isMultiSelect={isMultiSelect}
+              />
+            </View>
+          ))}
+        </ScrollView>
+  
+        <View style={styles.buttonContainer}>
+            {isFirstQuestion ? (
+                <TouchableOpacity
+                style={[styles.navButton, styles.backButton]}
+                onPress={handleBackToHome}
+                >
+                <Text style={styles.navButtonText}> صفحه اصلی</Text>
+                </TouchableOpacity>
+            ) : (
+                <TouchableOpacity
+                style={[styles.navButton, styles.backButton]}
+                onPress={handlePrevious}
+                >
+                <Text style={styles.navButtonText}>قبلی</Text>
+                </TouchableOpacity>
+            )}
 
-      return;
-    }
+            <TouchableOpacity
+                style={[styles.navButton, isDisabled && styles.disabledButton]}
+                onPress={handleNext}
+                disabled={isDisabled}
+            >
+                <Text style={styles.navButtonText}>
+                {isLastQuestion ? "دیدن نتیجه" : "بعدی"}
+                </Text>
+            </TouchableOpacity>
+        </View>
 
-    setAnswers(prev => [...prev, currentAnswer]);
-    setQuestionIndex(prev => prev + 1);
-    setSelectedOption(null);
-    setSelectedOptions([]);
-  }, [selectedOption, selectedOptions, questionIndex, answers, isDisabled]);
-
-  return (
-    <View style={styles.container}>
-      <View style={styles.progressBar}>
-        <ProgressBar questionNumber={questionIndex + 1} />
       </View>
-
-      <View style={styles.questionBoxContainer}>
-        <TextBox text={currentQuestion.question} fontSize={18} />
-      </View>
-
-      <ScrollView style={styles.scrollableOptions} contentContainerStyle={styles.optionsContainer}>
-        {currentQuestion.options.map(option => (
-          <View key={option.key} style={styles.answerBoxContainer}>
-            <AnswerBox
-              text={option.text}
-              selectedOption={isMultiSelect ? selectedOptions : selectedOption}
-              setSelectedOption={isMultiSelect ? setSelectedOptions : setSelectedOption}
-              optionKey={option.key}
-              isMultiSelect={isMultiSelect}
-            />
-          </View>
-        ))}
-      </ScrollView>
-
-      <TouchableOpacity
-        style={[styles.nextButton, isDisabled && styles.disabledButton]}
-        onPress={handleNext}
-        disabled={isDisabled}
-      >
-        <Text style={styles.nextButtonText}>
-          {isLastQuestion ? 'دیدن نتیجه' : 'بعدی'}
-        </Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
+    );
+  };
+  
 
 const styles = StyleSheet.create({
   container: {
@@ -209,6 +251,33 @@ const styles = StyleSheet.create({
     backgroundColor: '#cccccc',
     opacity: 0.6,
   },
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 50,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+  },
+  navButton: {
+    backgroundColor: Colors.primary,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    width: '48%',
+  },
+  navButtonText: {
+    color: '#fff',
+    fontSize: 18,
+  },
+  backButton: {
+    backgroundColor: Colors.secondary, 
+  },
+  backButton: {
+    backgroundColor: Colors.secondary,
+  },
+  
+  
 });
 
 export default Questions;
