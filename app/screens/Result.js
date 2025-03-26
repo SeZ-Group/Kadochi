@@ -1,8 +1,8 @@
 import React from "react";
-import { ScrollView, View, ImageBackground } from "react-native";
+import { ScrollView, View, Linking } from "react-native";
 import ProductCard from '../components/ProductCard';
 import { Colors } from '../assets/Colors';
-
+import axios from 'axios';
 
 const ProductScreen = ({ route }) => {
   const { giftSuggestion } = route.params;
@@ -17,9 +17,10 @@ const ProductScreen = ({ route }) => {
   
     if (Array.isArray(parsedSuggestions)) {
       products = parsedSuggestions.map(item => ({
-        title: item["product-title"],
-        image: item["product-image"],
-        description: item["product-description"]
+        title: item["title"],
+        image: item["image_url"],
+        description: item["description"],
+        url: item["product_url"]
       }));
     } else {
       console.error("parsedSuggestions is not an array:", parsedSuggestions);
@@ -29,7 +30,24 @@ const ProductScreen = ({ route }) => {
     console.error("Failed to parse giftSuggestion:", error);
     alert("مشکلی پیش اومده و فعلا نمیتونیم جوابگو باشیم. اگه میشه چند دقیقه دیگه دوباره تلاش کن.");
   }
+
+  const handleCardPress = async (index) => {
+    const selectedProduct = parsedSuggestions[index];
   
+    try {
+      await axios.post('http://192.168.238.59:8000/api/click/', {
+        suggestion_id: selectedProduct.id
+      });
+      console.log("Click registered for suggestion:", selectedProduct.id);
+    } catch (error) {
+      console.error("Error registering click:", error);
+    }
+  
+    if (selectedProduct.product_url) {
+      Linking.openURL(selectedProduct.product_url)
+        .catch(err => console.error("Failed to open URL:", err));
+    }
+  };
 
   return (
 
@@ -42,6 +60,7 @@ const ProductScreen = ({ route }) => {
             image={product.image}
             title={product.title}
             description={product.description}
+            onPress={() => handleCardPress(index)}
           />
         ))}
       </ScrollView>

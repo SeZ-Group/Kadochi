@@ -89,23 +89,20 @@ const Questions = ({ navigation }) => {
       const finalAnswers = {};
 
       questionsData.forEach((q, i) => {
-        // برای علاقه‌مندی‌ها فقط یکی رو بفرست یا همه رو ترکیب کن
         finalAnswers[q.key] = Array.isArray(allAnswers[i])
-          ? allAnswers[i][0]
-          : allAnswers[i][0];
+            ? (q.key === "interest" ? allAnswers[i] : allAnswers[i][0])
+            : allAnswers[i];
+
       });
 
-      console.log(finalAnswers)
-
       try {
-        const response = await axios.post(`http://Your-IP/api/suggestions/`, finalAnswers, {
+        const response = await axios.post(`http://192.168.238.59:8000/api/suggest/`, finalAnswers, {
           headers: {
             "Content-Type": "application/json"
           }
         });
 
         const suggestions = response.data;
-        console.log(suggestions)
         navigation.navigate('Result', { giftSuggestion: suggestions });
       } catch (error) {
         console.error("❌ خطا در گرفتن اطلاعات از بک‌اند:", error);

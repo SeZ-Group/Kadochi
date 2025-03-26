@@ -35,6 +35,3 @@ export default {
     ]
   }
 };
-
-console.log("🧪 API_KEY FROM .env:", process.env.API_KEY);
-console.log("🧪 BASE_URL FROM .env:", process.env.API_BASE_URL);

@@ -1,24 +1,24 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
+import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
 
 // Get device width for responsive sizing
 const { width } = Dimensions.get("window");
 
-const ProductCard = ({ image, title, description }) => {
+const ProductCard = ({ image, title, description, onPress }) => {
   return (
-
-    <View style={styles.card}>
-     <Image 
-        source={{ uri: image }}  // No need for additional checks
-        style={styles.image}
-        onError={(e) => console.log("Image failed to load", e.nativeEvent.error)}
-      />
+    <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
+      <View style={styles.card}>
+        <Image 
+          source={{ uri: image }}
+          style={styles.image}
+          onError={(e) => console.log("Image failed to load", e.nativeEvent.error)}
+        />
         <View style={styles.textContainer}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.description}>{description}</Text>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.description}>{description}</Text>
+        </View>
       </View>
-    </View>
-
+    </TouchableOpacity>
   );
 };
 

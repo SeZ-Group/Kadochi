@@ -72,7 +72,6 @@ const styles = StyleSheet.create({
         color: '#F8C660',
         marginTop: 5,
         textAlign: 'center',
-        fontFamily: 'Yaghut',
     },
     scrollView: {
         flex: 1,
