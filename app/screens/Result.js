@@ -35,7 +35,7 @@ const ProductScreen = ({ route }) => {
     const selectedProduct = parsedSuggestions[index];
   
     try {
-      await axios.post('http://188.121.101.146//api/click/', {
+      await axios.post('https://kadopych.ir//api/click/', {
         suggestion_id: selectedProduct.id
       });
       console.log("Click registered for suggestion:", selectedProduct.id);

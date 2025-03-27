@@ -101,7 +101,7 @@ const Questions = ({ navigation }) => {
         });
   
         try {
-          const response = await axios.post(`http://188.121.101.146/api/suggest/`, finalAnswers, {
+          const response = await axios.post(`https://kadopych.ir/api/suggest/`, finalAnswers, {
             headers: {
               "Content-Type": "application/json",
             },
