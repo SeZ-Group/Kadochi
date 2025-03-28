@@ -268,7 +268,8 @@ const styles = StyleSheet.create({
   },
   navButtonText: {
     color: '#fff',
-    fontSize: 18,
+    fontFamily: 'Yaghut',
+    fontSize: 13,
   },
   backButton: {
     backgroundColor: Colors.secondary, 
