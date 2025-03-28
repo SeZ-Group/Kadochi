@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     margin: 7,
     // Increased width & decreased height
     width: width * 0.8, // 80% of screen width
-    height: 90, // Reduced height
+    height: 100, // Reduced height
     flexDirection: "row", // Align items horizontally (image + text)
     alignItems: "center", // Vertically center items inside the row
   },
@@ -51,13 +51,14 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   title: {
-    fontSize: 13,
+    fontSize: 14,
     // fontWeight: "bold",
     textAlign: "right", // Align the title to the left
     fontFamily: 'Yaghut',
   },
   description: {
-    fontSize: 9,
+    fontSize: 11,
+    paddingTop:5,
     color: "#666",
     textAlign: "right", // Align the description to the left
     fontFamily: 'Yaghut',

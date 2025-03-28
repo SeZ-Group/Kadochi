@@ -26,6 +26,7 @@
         color: '#000',
         fontWeight: 'bold',
         textAlign: 'right',
+        
     },
   });
 
