@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, View, Linking } from "react-native";
+import { ScrollView, View, Linking, ImageBackground } from "react-native";
 import ProductCard from '../components/ProductCard';
 import { Colors } from '../assets/Colors';
 import axios from 'axios';
@@ -50,44 +50,63 @@ const ProductScreen = ({ route }) => {
   };
 
   return (
-
-    <View style={styles.overlay}>
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {products.map((product, index) => (
-          <ProductCard 
-            key={index}
-            image={product.image}
-            title={product.title}
-            description={product.description}
-            onPress={() => handleCardPress(index)}
-          />
-        ))}
-      </ScrollView>
+    <ImageBackground
+            source={require('../assets/bg.jpg')}
+            style={styles.imageBackground}
+        >
+      <View style={styles.overlay}>
+        <View style={styles.topContainer} />
+        <View style={styles.container}>
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            {products.map((product, index) => (
+              <ProductCard 
+                key={index}
+                image={product.image}
+                title={product.title}
+                description={product.description}
+                onPress={() => handleCardPress(index)}
+              />
+            ))}
+          </ScrollView>
+        </View>
       </View>
-      </View>
-
+    </ImageBackground>
   );
 };
 
 const styles = {
+  // topContainer: {
+  //   flex: 1,
+  // },
   container: {
-    flex: 1,
-    justifyContent: "flex-start", // Aligns content from the top
+    flex: 2,
+    justifyContent: "flex-start", 
     alignItems: "center",
-    paddingTop: 200, // Moves content down (adjust this value)
+    backgroundColor: Colors.background,
+    padding: 10,
+    zIndex: 1,
+    overflow: 'hidden', 
+    borderRadius: 20,
+    marginTop: 70,      // more space on top
+    marginBottom: 30,   // more space at bottom
+    marginHorizontal: 20, // keeps the same side spacing as before
+  },
+  imageBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   overlay: {
     flex: 1,
     width: '100%',
-    backgroundColor: `${Colors.primary}95`,
+    backgroundColor: `${Colors.primary}80`,
     justifyContent: 'center',
     alignItems: 'center',
 },
   scrollContainer: {
     alignItems: "center", // Centers items inside ScrollView horizontally
     justifyContent: "flex-start", // Prevents sticking to the top
-    paddingTop: 50, // Moves cards further down
+    // paddingTop: 10, // Moves cards further down
   },
 };
 

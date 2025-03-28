@@ -10,60 +10,60 @@ import Constants from 'expo-constants';
 const { API_BASE_URL } = Constants.expoConfig?.extra ?? {};
 
 const questionsData = [
-  {
-    key: "gender",
-    question: "زن هست یا مرد؟",
-    options: [
-      { key: "male", text: "👨 مرد" },
-      { key: "female", text: "👩 زن" }
-    ],
-  },
-  {
-    key: "relation",
-    question: "این هدیه برای کیه؟",
-    options: [
-      { key: "friend", text: "👯 یه دوست صمیمی" },
-      { key: "family", text: "👨‍👩‍👧‍👦 یکی از اعضای خانواده" },
-      { key: "partner", text: "💖 یه پارتنر عاشقانه" },
-      { key: "colleague", text: "🤝 یه همکار یا آشنا" }
-    ],
-  },
-  {
-    key: "age_group",
-    question: "چند سالشه؟",
-    options: [
-      { key: "teen", text: "🧑‍🎓 یه نوجوون خفن (۱۰-۱۸)" },
-      { key: "young", text: "🎉 یه جوون پرانرژی (۱۸-۳۵)" },
-      { key: "adult", text: "📅 یه بزرگسال کاردرست (۳۵-۵۰)" },
-      { key: "senior", text: "🌟 یه آدم باتجربه و باحال (۵۱+)" }
-    ],
-  },
-  {
-    key: "interest",
-    question: "به چی علاقه داره؟",
-    options: [
-      { key: "tech", text: "📱 تکنولوژی و گجت‌های خفن " },
-      { key: "fashion", text: "👗 مد و استایل " },
-      { key: "art", text: "🎨 یه هنرمنده!" },
-      { key: "books", text: "📖 یه کتاب‌خوره!" },
-      { key: "cooking", text: "🍳 آشپزی و غذا" },
-      { key: "sports", text: "💪 عاشق ورزشه" },
-      { key: "travel", text: "✈️ عشق سفر و ماجراجوییه" },
-      { key: "gaming", text: "🎮 گیمینگ" },
-      { key: "movies", text: "🎥 عشق فیلم و سریاله" }
-    ],
-  },
-  {
-    key: "budget",
-    question: "چقدر می‌خوای هزینه کنی؟",
-    options: [
-      { key: "low", text: "💵 کمتر از ۱۰۰ تومن" },
-      { key: "medium", text: "💰 بین ۱۰۰ تا ۱ میلیون تومن" },
-      { key: "high", text: "💳 بین ۱ میلیون تا ۵ میلیون تومن" },
-      { key: "very_high", text: "💎 بالای ۵ میلیون تومن" }
-    ],
-  },
-];
+    {
+      key: "gender",
+      question: "کادو برای یه خانمه یا آقا؟",
+      options: [
+        { key: "male", text: "آقا 👨" },
+        { key: "female", text: "خانم 👩" }
+      ],
+    },
+    {
+      key: "relation",
+      question: "این هدیه برای کیه؟",
+      options: [
+        { key: "friend", text: "یه دوست صمیمی 👯" },
+        { key: "family", text: "یکی از اعضای خانواده 👨‍👩‍👧‍👦" },
+        { key: "partner", text: "یه پارتنر عاشقانه 💖" },
+        { key: "colleague", text: "یه همکار یا آشنا 🤝" }
+      ],
+    },
+    {
+      key: "age_group",
+      question: "حدوداً چند سالشه؟",
+      options: [
+        { key: "teen", text: "یه نوجوون خفن (۱۰-۱۸) 🧑‍🎓" },
+        { key: "young", text: "یه جوون پرانرژی (۱۸-۳۵) 🕺" },
+        { key: "adult", text: "یه بزرگسال کاردرست (۳۵-۵۰)  👔" },
+        { key: "senior", text: "یه آدم باتجربه و باحال (۵۱+) 🧓" }
+      ],
+    },
+    {
+      key: "interest",
+      question: "به چی علاقه داره؟",
+      options: [
+        { key: "tech", text: "تکنولوژی و گجت‌های باحال 📱" },
+        { key: "fashion", text: "مد و استایل 👗" },
+        { key: "art", text: "کارهای هنری و خلاقانه 🎨" },
+        { key: "books", text: "کتاب خوندن و دنیای داستان‌ها 📖" },
+        { key: "cooking", text: "آشپزی و غذا 🍳" },
+        { key: "sports", text: "ورزش و تحرک 💪" },
+        { key: "travel", text: " سفر و ماجراجویی ✈️" },
+        { key: "gaming", text: "گیم و دنیای بازی‌ها 🎮" },
+        { key: "movies", text: " فیلم و سریال 🎥" }
+      ],
+    },
+    {
+      key: "budget",
+      question: "چقدر می‌خوای هزینه کنی؟",
+      options: [
+        { key: "low", text: "کمتر از ۱۰۰ تومن 🧃" },
+        { key: "medium", text: "بین ۱۰۰ تا ۱ میلیون تومن 🛍️" },
+        { key: "high", text: "بین ۱ میلیون تا ۵ میلیون تومن 💰" },
+        { key: "very_high", text: "بالای ۵ میلیون تومن 💎" }
+      ],
+    },
+  ];  
 
 const Questions = ({ navigation }) => {
     const [questionIndex, setQuestionIndex] = useState(0);
@@ -146,7 +146,7 @@ const Questions = ({ navigation }) => {
         </View>
   
         <View style={styles.questionBoxContainer}>
-          <TextBox text={currentQuestion.question} fontSize={18} />
+          <TextBox text={currentQuestion.question} fontSize={16} />
         </View>
   
         <ScrollView style={styles.scrollableOptions} contentContainerStyle={styles.optionsContainer}>

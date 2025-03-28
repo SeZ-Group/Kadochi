@@ -38,10 +38,11 @@ const styles = StyleSheet.create({
   },
   text: {
     padding: 10,
-    fontSize: 20,
+    fontSize: 16,
     fontFamily: 'Yaghut',
     textAlign: 'right',
     color: '#000',
+    writingDirection: 'rtl',
   },
   selectedOption: {
     backgroundColor: 'rgba(171, 209, 198, 1)',

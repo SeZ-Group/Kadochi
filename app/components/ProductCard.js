@@ -14,8 +14,8 @@ const ProductCard = ({ image, title, description, onPress }) => {
           onError={(e) => console.log("Image failed to load", e.nativeEvent.error)}
         />
         <View style={styles.textContainer}>
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.description}>{description}</Text>
+          <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">{title}</Text>
+          <Text style={styles.description} numberOfLines={3} ellipsizeMode="tail">{description}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -33,32 +33,34 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-    margin: 10,
-
+    margin: 7,
     // Increased width & decreased height
     width: width * 0.8, // 80% of screen width
-    height: 120, // Reduced height
+    height: 90, // Reduced height
     flexDirection: "row", // Align items horizontally (image + text)
     alignItems: "center", // Vertically center items inside the row
   },
   image: {
-    width: 80,
-    height: 80,
+    width: 60,
+    height: 60,
     borderRadius: 10,
     marginRight: 15, // Space between image and text
   },
   textContainer: {
     flex: 1, // Takes the remaining space for the title and description
+    flexShrink: 1,
   },
   title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "left", // Align the title to the left
+    fontSize: 13,
+    // fontWeight: "bold",
+    textAlign: "right", // Align the title to the left
+    fontFamily: 'Yaghut',
   },
   description: {
-    fontSize: 14,
+    fontSize: 9,
     color: "#666",
-    textAlign: "left", // Align the description to the left
+    textAlign: "right", // Align the description to the left
+    fontFamily: 'Yaghut',
   },
   imageBackground: {
     flex: 1,

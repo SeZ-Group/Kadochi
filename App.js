@@ -8,7 +8,7 @@ import Result from './app/screens/Result';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
-    'Yaghut': require('./app/assets/fonts/nadine.ttf'),
+    'Yaghut': require('./app/assets/fonts/IRANMarker.ttf'),
   });
 
   if (!fontsLoaded) {
@@ -20,7 +20,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Welcome" component={Welcome} / >
+        <Stack.Screen name="Welcome" component={Welcome} />
         <Stack.Screen name="Questions" component={Questions} />
         <Stack.Screen name="Result" component={Result} />
       </Stack.Navigator>
