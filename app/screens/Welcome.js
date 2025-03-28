@@ -14,7 +14,7 @@ function Welcome({navigation}) { // ✅ Receive navigation prop
                 {/* Logo and Title */}
                 <View style={styles.header}>
                     <Image source={require('../assets/best-logo.png')} style={styles.logo} />
-                    <Text style={styles.title}>کادوچی</Text>
+                    <Text style={styles.title}>کادوپیچ</Text>
                 </View>
 
                 <ScrollView 

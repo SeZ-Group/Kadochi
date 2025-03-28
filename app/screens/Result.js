@@ -58,7 +58,7 @@ const ProductScreen = ({ route }) => {
         <View style={styles.topContainer}>
           <View style={styles.header}>
               <Image source={require('../assets/best-logo.png')} style={styles.logo} />
-              <Text style={styles.title}>کادوچی</Text>
+              <Text style={styles.title}>کادوپیچ</Text>
           </View>
         </View>
         <View style={styles.container}>
