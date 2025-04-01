@@ -1,13 +1,23 @@
 import React, { useState, useCallback } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, ScrollView } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text, ScrollView, ActivityIndicator } from 'react-native';
 import { Colors } from '../assets/Colors';
 import ProgressBar from '../components/ProgressBar';
 import TextBox from '../components/TextBox';
 import AnswerBox from '../components/AnswerBox';
 import axios from 'axios';
-import Constants from 'expo-constants';
 
-const { API_BASE_URL } = Constants.expoConfig?.extra ?? {};
+import { Adivery } from "adivery";
+
+// declare your placementIds
+
+// these are test placements , replace with your own
+const rewardedPlacement = "c3573ea3-3e83-4f33-b235-1d0e85562cfe"
+const adiveryAppId = "dc85320f-59f6-4071-833b-23889786555a"
+// initialize Adivery
+Adivery.configure(adiveryAppId)
+
+
+Adivery.prepareRewardedAd(rewardedPlacement);
 
 const questionsData = [
     {
@@ -66,6 +76,8 @@ const questionsData = [
   ];  
 
 const Questions = ({ navigation }) => {
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
     const [questionIndex, setQuestionIndex] = useState(0);
     const [selectedOption, setSelectedOption] = useState(null);
     const [selectedOptions, setSelectedOptions] = useState([]);
@@ -91,6 +103,7 @@ const Questions = ({ navigation }) => {
       const currentAnswer = isMultiSelect ? selectedOptions : [selectedOption];
   
       if (isLastQuestion) {
+        setLoading(true); // Show loader
         const allAnswers = [...answers, currentAnswer];
         const finalAnswers = {};
   
@@ -99,19 +112,67 @@ const Questions = ({ navigation }) => {
             ? (q.key === "interest" ? allAnswers[i] : allAnswers[i][0])
             : allAnswers[i];
         });
-  
-        try {
-          const response = await axios.post(`https://kadopych.ir/api/suggest/`, finalAnswers, {
-            headers: {
-              "Content-Type": "application/json",
-            },
+
+        Adivery.isLoaded(rewardedPlacement).then((isLoaded) => {
+           let counter = 0
+           let interval = setInterval(async ()=>{
+            counter += 1;
+            if (isLoaded) {
+             clearInterval(interval);
+             Adivery.showAd(rewardedPlacement);
+          }
+          if (counter>5){
+            clearInterval(interval);
+            const response = await axios.post(`https://kadopych.ir/api/suggest/`, finalAnswers, {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            });
+            const suggestions = response.data;
+            navigation.navigate("Result", { giftSuggestion: suggestions });
+
+          }
+           }, 200)
           });
-  
-          const suggestions = response.data;
-          navigation.navigate("Result", { giftSuggestion: suggestions });
-        } catch (error) {
-          console.error("❌ خطا در گرفتن اطلاعات از بک‌اند:", error);
-        }
+          
+        
+
+
+         Adivery.addGlobalListener({
+           onRewardedAdLoaded: (rewardedPlacement) => {
+           }, onRewardedAdClosed: async(_, reward) =>{
+
+            if(reward){
+              try {
+
+              const response = await axios.post(`https://kadopych.ir/api/suggest/`, finalAnswers, {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              });
+              const suggestions = response.data;
+              navigation.navigate("Result", { giftSuggestion: suggestions });
+
+            } catch (error) {
+              setErrorMessage("یه مشکلی هست انگار، دوباره بزن!");
+              setTimeout(() => {
+                setErrorMessage(null);
+              }, 5000);
+            }
+            finally {
+              setLoading(false); // Hide loader
+            }
+      
+            } else {
+              setLoading(false); // Hide loader
+              setErrorMessage("برای دیدن نتیجه نهایی، لطفا ویدیو رو کامل ببین!");
+              setTimeout(() => {
+                setErrorMessage(null);
+              }, 5000);
+            }
+           }
+          });
+        
   
         return;
       }
@@ -140,6 +201,7 @@ const Questions = ({ navigation }) => {
     };
   
     return (
+      
       <View style={styles.container}>
         <View style={styles.progressBar}>
           <ProgressBar questionNumber={questionIndex + 1} />
@@ -185,11 +247,23 @@ const Questions = ({ navigation }) => {
                 onPress={handleNext}
                 disabled={isDisabled}
             >
-                <Text style={styles.navButtonText}>
-                {isLastQuestion ? "دیدن نتیجه" : "بعدی"}
-                </Text>
+                {loading ? (
+    <ActivityIndicator color="#fff" />
+  ) : (
+    <Text style={styles.navButtonText}>
+      {isLastQuestion ? "دیدن نتیجه" : "بعدی"}
+    </Text>
+    
+  )}
+
+                
             </TouchableOpacity>
         </View>
+        {errorMessage && (
+  <View style={{ backgroundColor: '#fdd', padding: 10, marginVertical: 10, borderRadius: 8 }}>
+    <Text style={{ color: '#900', textAlign: 'center' }}>{errorMessage}</Text>
+  </View>
+)}
 
       </View>
     );
@@ -277,6 +351,14 @@ const styles = StyleSheet.create({
   backButton: {
     backgroundColor: Colors.secondary,
   },
+  loadingOverlay: {
+    position: 'absolute',
+    top: '40%',
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    zIndex: 10,
+  }
   
   
 });

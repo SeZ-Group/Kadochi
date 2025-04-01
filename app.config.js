@@ -2,30 +2,33 @@ import 'dotenv/config';
 
 export default {
   expo: {
-    name: "kadochi",
-    slug: "kadochi",
+    name: "Kadopych",
+    slug: "kadopych",
     version: "1.0.0",
     orientation: "portrait",
     icon: "./app/assets/icon.png",
     userInterfaceStyle: "light",
     newArchEnabled: true,
     splash: {
-      image: "./app/assets/splash-icon.png",
+      image: "./app/assets/icon.png",
       resizeMode: "contain",
       backgroundColor: "#ffffff"
     },
     extra: {
-      API_KEY: process.env.API_KEY,
-      API_BASE_URL: process.env.API_BASE_URL
+      eas: {
+        projectId: "bfb0dd8a-08f4-49f1-a6a3-c3111150a1bc"
+      }
     },
     ios: {
       supportsTablet: true
     },
     android: {
       adaptiveIcon: {
-        foregroundImage: "./app/assets/adaptive-icon.png",
+        foregroundImage: "./app/assets/icon.png",
         backgroundColor: "#ffffff"
-      }
+      },
+       package: "com.kadopych"
+
     },
     web: {
       favicon: "./app/assets/favicon.png"

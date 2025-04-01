@@ -1,10 +1,11 @@
 import React from "react";
-import { ScrollView, View, Linking, ImageBackground, Image, Text } from "react-native";
+import { ScrollView, View, Linking, ImageBackground, Image, Text, TouchableOpacity } from "react-native";
+
 import ProductCard from '../components/ProductCard';
 import { Colors } from '../assets/Colors';
 import axios from 'axios';
 
-const ProductScreen = ({ route }) => {
+const ProductScreen = ({ navigation, route }) => {
   const { giftSuggestion } = route.params;
   let parsedSuggestions = [];
 
@@ -72,9 +73,17 @@ const ProductScreen = ({ route }) => {
                 onPress={() => handleCardPress(index)}
               />
             ))}
+                 
           </ScrollView>
+      
         </View>
+        <View style={styles.buttonContainer}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Welcome')}>
+        <Text style={styles.buttonText}>بریم از اول!</Text>
+      </TouchableOpacity>
+    </View>
       </View>
+
     </ImageBackground>
   );
 };
@@ -137,8 +146,8 @@ const styles = {
       position: 'relative', // make it a positioned container
   },
   logo: {
-      width: 95,
-      height: 95,
+      width: 130,
+      height: 130,
       resizeMode: 'contain',
   },
   title: {
@@ -151,6 +160,31 @@ const styles = {
       textAlign: 'right',
       writingDirection: 'rtl',
   },
+  button: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height:'100%'
+},
+buttonContainer: {
+  
+  width: '80%',
+  alignSelf: 'center',
+  height: 50,
+  borderRadius: 20,
+  backgroundColor: '#F8C660',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginTop: 20,
+  marginBottom: 40, // Gives breathing space at the end
+},
+buttonText: {
+    color: '#FFFFFF',
+    fontSize: 17,
+    fontWeight: 'bold',
+    fontFamily: 'Yaghut',
+}
 };
 
 export default ProductScreen;

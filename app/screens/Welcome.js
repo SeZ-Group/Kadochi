@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Image, ImageBackground, ScrollView, Text, TouchableOpacity } from 'react-native';
 import { Colors } from '../assets/Colors';
-import Button from '../components/Button';
 
 function Welcome({navigation}) { // ✅ Receive navigation prop
     return (
@@ -70,8 +69,8 @@ const styles = StyleSheet.create({
         position: 'relative', // make it a positioned container
     },
     logo: {
-        width: 95,
-        height: 95,
+        width: 130,
+        height: 130,
         resizeMode: 'contain',
     },
     title: {
